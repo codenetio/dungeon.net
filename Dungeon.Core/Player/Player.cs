@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using Dungeon.Core.Entities;
+using Dungeon.Core.Models;
 
-namespace Dungeon.Core.Models
+namespace Dungeon.Core.Player
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public class Player
+    public class Player : IEntity
     {
         /// <summary>
         /// Gets or sets the identifier.
@@ -43,6 +44,7 @@ namespace Dungeon.Core.Models
         /// The armor class.
         /// </value>
         public int ArmorClass { get; set; }
+
         
     }
 }

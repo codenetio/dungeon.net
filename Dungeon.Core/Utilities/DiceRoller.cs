@@ -4,9 +4,9 @@ namespace Dungeon.Core.Utilities
 {
     public static class DiceRoller
     {
-        public static int Roll(int numberOfSides)
+        public static int Roll(int quantity, DiceType type)
         {
-            return new Random().Next(1,numberOfSides);
+            return new Random().Next(1,(int)type);
         }
     }
 }

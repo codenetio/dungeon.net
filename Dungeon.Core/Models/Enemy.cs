@@ -1,11 +1,12 @@
 ﻿using System;
+using Dungeon.Core.Entities;
 
 namespace Dungeon.Core.Models
 {
     /// <summary>
     /// An enemy
     /// </summary>
-    public abstract class Enemy
+    public abstract class Enemy : IEntity
     {
         /// <summary>
         /// Gets or sets the identifier.
@@ -45,9 +46,19 @@ namespace Dungeon.Core.Models
         public int HitPoints { get; set; }
 
         /// <summary>
-        /// Attacks this instance.
+        /// Gets or sets the short description.
         /// </summary>
-        /// <returns>The result of the attack.</returns>
-        public abstract AttackResult Attack();
+        /// <value>
+        /// The short description.
+        /// </value>
+        public string ShortDescription { get; set; }
+
+        /// <summary>
+        /// Gets or sets the long description.
+        /// </summary>
+        /// <value>
+        /// The long description.
+        /// </value>
+        public string LongDescription { get; set; }
     }
 }

@@ -18,15 +18,20 @@ namespace Dungeon.UI.Console
             _gameLog = new GameLog(1,1,System.Console.WindowWidth - 2, System.Console.WindowHeight - 6);
             _commandParser = new CommandParser();
 
-            _commandParser.Attack += Attack; ;
+            _commandParser.Attack += Attack;
             _commandParser.Run += _game.Run;
         }
 
-        private void Attack()
+        private void Attack(int target)
         {
+            var targetIndex = target - 1; // 1-based to 0-based.
             var player = _game.GetPlayer();
             var room = _game.GetRoom(player.Location);
-            var result = _game.AttackEnemy(room.Enemies[0].Id);
+            if (room.Enemies.Count > target)
+            {
+                _gameLog.Write($"Target '{target}' does not exist.");
+            }
+            var result = _game.AttackEnemy(room.Enemies[targetIndex].Id);
             _gameLog.Write(result.Message);
             if (result.ValidAttack)
             {

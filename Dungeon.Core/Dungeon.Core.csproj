@@ -41,8 +41,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Enemies\Goblin.cs" />
+    <Compile Include="Entities\IAttackable.cs" />
+    <Compile Include="Entities\IEntity.cs" />
     <Compile Include="Models\AttackResult.cs" />
+    <Compile Include="Utilities\Dice.cs" />
     <Compile Include="Utilities\DiceRoller.cs" />
+    <Compile Include="Utilities\DiceType.cs" />
+    <Compile Include="Utilities\DieRoll.cs" />
     <Compile Include="Utilities\EnemyGenerator.cs" />
     <Compile Include="Models\RoomExit.cs" />
     <Compile Include="Game.cs" />
@@ -50,9 +55,10 @@
     <Compile Include="Models\Enemy.cs" />
     <Compile Include="Models\EnemyType.cs" />
     <Compile Include="Models\Location.cs" />
-    <Compile Include="Models\Player.cs" />
+    <Compile Include="Player\Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\Room.cs" />
+    <Compile Include="Utilities\RollResult.cs" />
     <Compile Include="Utilities\RoomGenerator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

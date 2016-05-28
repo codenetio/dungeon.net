@@ -5,9 +5,11 @@ namespace Dungeon.UI.Console
     public class CommandParser
     {
 
+        public delegate void AttackDelegate(int targetIndex);
+
         #region Events
 
-        public event Action Attack;
+        public event AttackDelegate Attack;
         public event Action East;
         public event Action Help;
         public event Action North;
@@ -18,13 +20,24 @@ namespace Dungeon.UI.Console
 
         #endregion
 
-        public void Parse(string text)
+        public void Parse(string command)
         {
-            switch (text.ToLower())
+            var commands = command.Split(' ');
+
+            switch (commands[0].ToLower())
             {
                 case "attack":
                 case "a":
-                    Attack?.Invoke();
+                    var target = 0;
+                    if (commands.Length > 0)
+                    {
+                        if (!int.TryParse(commands[1], out target))
+                        {
+                            Unknown?.Invoke();
+                            return;
+                        }
+                    }
+                    Attack?.Invoke(target);
                     break;
                 case "east":
                 case "e":
