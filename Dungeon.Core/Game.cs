@@ -43,6 +43,14 @@ namespace Dungeon.Core
             var enemy = _room.Enemies.FirstOrDefault(e => e.Id == id);
             if (enemy != null)
             {
+                if (enemy.HitPoints == 0)
+                {
+                    result.Message = $"The {enemy.Type} is already dead.";
+                    return result;
+                }
+
+                result.ValidAttack = true;
+
                 var hitRoll = DiceRoller.Roll(20);
                 if (hitRoll >= enemy.ArmorClass)
                 {
@@ -64,8 +72,12 @@ namespace Dungeon.Core
                 {
                     result.Message = $"The attack missed the {enemy.Type}!";
                 }
+                result.HitRoll = hitRoll;
+                result.RemainingHitPoints = enemy.HitPoints;
+                result.TargetAC = enemy.ArmorClass;
             }
 
+            
             return result;
         }
 

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using Dungeon.Core;
+using Dungeon.Core.Models;
 
 namespace Dungeon.UI.Console
 {
@@ -14,7 +15,7 @@ namespace Dungeon.UI.Console
         public ConsoleGame()
         {
             _game = new Game();
-            _gameLog = new GameLog(1,1,System.Console.WindowWidth - 2, System.Console.WindowHeight - 5);
+            _gameLog = new GameLog(1,1,System.Console.WindowWidth - 2, System.Console.WindowHeight - 6);
             _commandParser = new CommandParser();
 
             _commandParser.Attack += Attack; ;
@@ -27,6 +28,15 @@ namespace Dungeon.UI.Console
             var room = _game.GetRoom(player.Location);
             var result = _game.AttackEnemy(room.Enemies[0].Id);
             _gameLog.Write(result.Message);
+            if (result.ValidAttack)
+            {
+                var rollInfo = $"ROLL: {result.HitRoll} AC: {result.TargetAC}";
+                if (result.DidHit)
+                {
+                    rollInfo += $" | DMG: {result.Damage} | HP: {result.RemainingHitPoints}";
+                }
+                _gameLog.Write(rollInfo);
+            }
         }
 
         public void Start()

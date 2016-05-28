@@ -23,24 +23,29 @@ namespace Dungeon.UI.Console
             switch (text.ToLower())
             {
                 case "attack":
+                case "a":
                     Attack?.Invoke();
                     break;
                 case "east":
+                case "e":
                     East?.Invoke();
                     break;
                 case "help":
                     Help?.Invoke();
                     break;
                 case "north":
+                case "n":
                     North?.Invoke();
                     break;
                 case "run":
                     Run?.Invoke();
                     break;
                 case "south":
+                case "s":
                     South?.Invoke();
                     break;
                 case "west":
+                case "w":
                     West?.Invoke();
                     break;
                 default:
