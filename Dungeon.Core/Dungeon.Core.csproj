@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enemies\Goblin.cs" />
     <Compile Include="Models\AttackResult.cs" />
     <Compile Include="Utilities\DiceRoller.cs" />
     <Compile Include="Utilities\EnemyGenerator.cs" />

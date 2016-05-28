@@ -5,7 +5,7 @@ namespace Dungeon.Core.Models
     /// <summary>
     /// An enemy
     /// </summary>
-    public class Enemy
+    public abstract class Enemy
     {
         /// <summary>
         /// Gets or sets the identifier.
@@ -43,5 +43,11 @@ namespace Dungeon.Core.Models
         /// The hit points of the enemy.
         /// </value>
         public int HitPoints { get; set; }
+
+        /// <summary>
+        /// Attacks this instance.
+        /// </summary>
+        /// <returns>The result of the attack.</returns>
+        public abstract AttackResult Attack();
     }
 }
