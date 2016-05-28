@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Dungeon.UI.Console
@@ -27,13 +28,34 @@ namespace Dungeon.UI.Console
 
         public void Write(string text)
         {
-            _gameText.Add(text);
+            WriteToBuffer(text);
             Render();
         }
 
         public void WriteToBuffer(string text)
         {
-            _gameText.Add(text);
+            if (text.Length < _textAreaWidth)
+            {
+                _gameText.Add(text);
+                return;
+            }
+
+            // break up the lines
+            var words = text.Split(' ');
+            var line = string.Empty;
+            foreach (var word in words)
+            {
+                if (line.Length + word.Length + 1 > _textAreaWidth)
+                {
+                    _gameText.Add(line);
+                    line = word + ' ';
+                }
+                else
+                {
+                    line += word + ' ';
+                }
+            }
+             _gameText.Add(line);
         }
 
         public void Render()

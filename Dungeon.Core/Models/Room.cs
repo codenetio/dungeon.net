@@ -22,7 +22,7 @@ namespace Dungeon.Core.Models
                 ? "  There are exits in the following directions: " +
                   Exits.Select(e => e.Direction.ToString()).Aggregate((i, j) => i + ", " + j) + "."
                 : string.Empty;
-            return $"The room is dimly lit.{enemyText}{exitText}";
+            return $"The room is dimly lit by two torches on the east and west walls.{enemyText}{exitText}";
         }
     }
 }
