@@ -4,83 +4,84 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dungeon.Core.Models;
+using Dungeon.Core.Utilities;
 
 namespace Dungeon.Core
 {
     public class Game
     {
         private Player _player;
-        private Enemy _enemy;
-        private IList<string> _outputBuffer; 
+        private Room _room;
 
         public void NewGame()
         {
-            GameOver = false;
-            _outputBuffer = new List<string>();
-            _outputBuffer = new List<string> {"You are in a dark room with an enemy facing you."};
+            _room = RoomGenerator.CreateRoom(1);
+            _player = new Player
+            {
+                Id = Guid.NewGuid(),
+                HitPoints = 5,
+                Location = _room.Location,
+                Name = "Player",
+                ArmorClass = 14
+            };
         }
 
-        public IList<string> Output
+        public Player GetPlayer()
         {
-            get
-            {
-                var result = _outputBuffer.ToList();
-
-                _outputBuffer = new List<string>();
-                return result;
-            }
-            
+            return _player;
         }
 
-        public bool GameOver { get; private set; }
-
-        public void AttackEnemy()
+        public Room GetRoom(Location location)
         {
-            var enemyAttack = new Random().Next(1, 10);
-            if (enemyAttack < 8)
+            return _room;
+        }
+
+        public AttackResult AttackEnemy(Guid id)
+        {
+            var result = new AttackResult();
+
+            var enemy = _room.Enemies.FirstOrDefault(e => e.Id == id);
+            if (enemy != null)
             {
-                _outputBuffer.Add("The enemy was killed.");
-                NewEnemy();
+                var hitRoll = DiceRoller.Roll(20);
+                if (hitRoll >= enemy.ArmorClass)
+                {
+                    result.DidHit = true;
+                    var damage = DiceRoller.Roll(4);
+                    result.Damage = damage;
+                    enemy.HitPoints = Math.Max(enemy.HitPoints - damage, 0);
+                    if (enemy.HitPoints == 0)
+                    {
+                        result.Killed = true;
+                        result.Message = $"The {enemy.Type} was hit for {damage} and was killed.";
+                    }
+                    else
+                    {
+                        result.Message = $"The {enemy.Type} was hit for {damage} but was not killed.";
+                    }
+                }
+                else
+                {
+                    result.Message = $"The attack missed the {enemy.Type}!";
+                }
             }
-            else
-            {
-                _outputBuffer.Add("The enemy narrowly evades the attack.");
-                AttackPlayer();
-            }
+
+            return result;
         }
 
         public void Run()
         {
-            var run = new Random().Next(1,10);
-            if (run < 4)
-            {
-                _outputBuffer.Add("You narrowly escaped the enemy.");
-            }
-            else
-            {
-                _outputBuffer.Add("You were unable to run away.");
-                AttackPlayer();
-            }
+            
         }
 
         private void AttackPlayer()
         {
-            var playerAttack = new Random().Next(1, 10);
-            if (playerAttack < 5)
-            {
-                _outputBuffer.Add("You were killed by the enemy.");
-                GameOver = true;
-
-            }
-            else
-            {
-                _outputBuffer.Add("The enemy attacks, but misses.");
-            }
+            
         }
 
         private void NewEnemy()
         {
-            _outputBuffer.Add("Another enemy magically appears.");
+            
         }
     }
 }

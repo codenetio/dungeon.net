@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 using Dungeon.Core;
 
 namespace Dungeon.UI.Console
@@ -11,12 +8,25 @@ namespace Dungeon.UI.Console
     {
         private Game _game;
         private bool _playing;
-        private IList<string> _gameText;  
+        private GameLog _gameLog;
+        private CommandParser _commandParser;
 
         public ConsoleGame()
         {
             _game = new Game();
-            _gameText = new List<string>();
+            _gameLog = new GameLog(1,1,System.Console.WindowWidth - 2, System.Console.WindowHeight - 5);
+            _commandParser = new CommandParser();
+
+            _commandParser.Attack += Attack; ;
+            _commandParser.Run += _game.Run;
+        }
+
+        private void Attack()
+        {
+            var player = _game.GetPlayer();
+            var room = _game.GetRoom(player.Location);
+            var result = _game.AttackEnemy(room.Enemies[0].Id);
+            _gameLog.Write(result.Message);
         }
 
         public void Start()
@@ -25,13 +35,13 @@ namespace Dungeon.UI.Console
             _game.NewGame();
 
             _playing = true;
-            foreach (var line in _game.Output)
-            {
-                _gameText.Add(line);
-            }
+            var player = _game.GetPlayer();
+            var room = _game.GetRoom(player.Location);
+
+            _gameLog.WriteToBuffer(room.Description());
 
             RenderBackground();
-            RenderText();
+            _gameLog.Render();
             SetCursorForInput();
 
             while (_playing)
@@ -39,31 +49,9 @@ namespace Dungeon.UI.Console
                 
                 var input = System.Console.ReadLine();
                 ClearInput();
-                switch (input?.ToLower())
-                {
-                    case "attack":
-                        _game.AttackEnemy();
-                        _playing = !_game.GameOver;
-                        break;
-                    case "run":
-                        _game.Run();
-                        _playing = !_game.GameOver;
-                        break;
-                    case "q":
-                        _gameText.Add("Goodbye!");
-                        _playing = false;
-                        break;
-                    default:
-                        _gameText.Add("I don't understand.");
-                        break;
-                }
-
-                foreach (var line in _game.Output)
-                {
-                    _gameText.Add(line);
-                }
-
-                RenderText();
+                
+                _commandParser.Parse(input);
+                
                 SetCursorForInput();
             }
             
@@ -112,46 +100,6 @@ namespace Dungeon.UI.Console
 
             }
             System.Console.Write(background);
-        }
-
-        private void RenderText()
-        {
-            var height = System.Console.WindowHeight;
-            var width = System.Console.WindowWidth;
-
-            var numberOfLines = height - 5;
-            var lineWidth = width - 2;
-            System.Console.SetCursorPosition(1, 1);
-
-            var index = 0;
-            if (_gameText?.Count > numberOfLines)
-            {
-                index = (_gameText.Count - 1) - numberOfLines;
-            }
-
-            var textArea = new StringBuilder();
-
-            for (var i = 1; i < height - 3; i++)
-            {
-                System.Console.SetCursorPosition(1,i);
-
-                if (index < _gameText?.Count)
-                {
-                    var text = _gameText[index].PadRight(lineWidth, ' ');
-                    System.Console.Write(text);
-                }
-                else
-                {
-                    var text = string.Empty;
-                    for (var j = 0; j < lineWidth; j ++)
-                    {
-                        text += " ";
-                    }
-                    System.Console.Write(text);
-                }
-                index++;
-            }
-            System.Console.Write(textArea);
         }
 
         private void ClearInput()
