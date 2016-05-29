@@ -70,15 +70,20 @@ namespace Dungeon.UI.Console
             }
 
             var result = _game.AttackEnemy(enemy.Id);
-            _gameLog.Write(result.Message);
+            
             if (result.ValidAttack)
             {
+                _gameLog.Write(result.Message);
                 var rollInfo = $"ROLL: {result.HitRoll} AC: {result.TargetAC}";
                 if (result.DidHit)
                 {
                     rollInfo += $" | DMG: {result.Damage} | HP: {result.RemainingHitPoints}";
                 }
-                _gameLog.Write(rollInfo, ConsoleColor.Black, ConsoleColor.Red);
+                _gameLog.Write(rollInfo, ConsoleColor.Black, ConsoleColor.Cyan);
+            }
+            else
+            {
+                _gameLog.Write(result.Message, ConsoleColor.Black, ConsoleColor.Red );
             }
         }
 

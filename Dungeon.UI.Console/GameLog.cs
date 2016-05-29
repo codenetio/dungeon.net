@@ -52,7 +52,7 @@ namespace Dungeon.UI.Console
                 {
                     BackgroundColor = backgroundColor,
                     ForegroundColor = foregroundColor,
-                    Text = text
+                    Text = text.PadRight(_textAreaWidth, ' ')
                 });
                 return;
             }
