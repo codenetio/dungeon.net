@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 using Dungeon.Core;
 using Dungeon.Core.Models;
@@ -15,23 +17,52 @@ namespace Dungeon.UI.Console
         public ConsoleGame()
         {
             _game = new Game();
-            _gameLog = new GameLog(1,1,System.Console.WindowWidth - 2, System.Console.WindowHeight - 6);
+            _gameLog = new GameLog(1, 1, System.Console.WindowWidth - 2, System.Console.WindowHeight - 6);
             _commandParser = new CommandParser();
 
             _commandParser.Attack += Attack;
             _commandParser.Run += _game.Run;
         }
 
-        private void Attack(int target)
+        private void Attack(string target)
         {
-            var targetIndex = target - 1; // 1-based to 0-based.
             var player = _game.GetPlayer();
             var room = _game.GetRoom(player.Location);
-            if (room.Enemies.Count > target)
+            Enemy enemy = null;
+
+
+            if (!string.IsNullOrEmpty(target))
             {
-                _gameLog.Write($"Target '{target}' does not exist.");
+                int targetIndex;
+                if (int.TryParse(target, out targetIndex))
+                {
+                    var index = targetIndex - 1; // 1-based to 0-based.
+                    enemy = room.Enemies.Count > index ? room.Enemies[index] : null;
+                    if (enemy == null)
+                    {
+                        _gameLog.Write($"Target [{target}] does not exist.");
+                        return;
+                    }
+                }
+                if (enemy == null)
+                {
+                    enemy = room.Enemies.FirstOrDefault(e => e.Type.ToString().ToLower().Contains(target.ToLower()));
+                }
+
             }
-            var result = _game.AttackEnemy(room.Enemies[targetIndex].Id);
+
+            if (enemy == null)
+            {
+                enemy = room.Enemies.FirstOrDefault();
+            }
+
+            if (enemy == null)
+            {
+                _gameLog.Write("There's nothing to attack.");
+                return;
+            }
+
+            var result = _game.AttackEnemy(enemy.Id);
             _gameLog.Write(result.Message);
             if (result.ValidAttack)
             {
@@ -61,15 +92,15 @@ namespace Dungeon.UI.Console
 
             while (_playing)
             {
-                
+
                 var input = System.Console.ReadLine();
                 ClearInput();
-                
+
                 _commandParser.Parse(input);
-                
+
                 SetCursorForInput();
             }
-            
+
             System.Console.ReadKey();
         }
 
@@ -84,7 +115,7 @@ namespace Dungeon.UI.Console
         {
             var height = System.Console.WindowHeight;
             var width = System.Console.WindowWidth;
-            System.Console.SetCursorPosition(0,0);
+            System.Console.SetCursorPosition(0, 0);
             var background = new StringBuilder();
             for (var i = 0; i < height; i++)
             {
@@ -119,7 +150,7 @@ namespace Dungeon.UI.Console
 
         private void ClearInput()
         {
-            System.Console.SetCursorPosition(1,System.Console.WindowHeight - 2);
+            System.Console.SetCursorPosition(1, System.Console.WindowHeight - 2);
             var text = string.Empty;
             for (var i = 0; i < System.Console.WindowWidth - 2; i++)
             {
