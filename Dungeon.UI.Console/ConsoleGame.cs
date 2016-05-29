@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -33,20 +34,26 @@ namespace Dungeon.UI.Console
 
             if (!string.IsNullOrEmpty(target))
             {
+                // Find the enemy by its index if the target is an integer.
                 int targetIndex;
                 if (int.TryParse(target, out targetIndex))
                 {
                     var index = targetIndex - 1; // 1-based to 0-based.
                     enemy = room.Enemies.Count > index ? room.Enemies[index] : null;
-                    if (enemy == null)
-                    {
-                        _gameLog.Write($"Target [{target}] does not exist.");
-                        return;
-                    }
+                    
                 }
+
+                // Find the enemy by name (type)
                 if (enemy == null)
                 {
                     enemy = room.Enemies.FirstOrDefault(e => e.Type.ToString().ToLower().Contains(target.ToLower()));
+                }
+
+                // uh, we tried to find the enemy, but we have no idea what you're talking about.
+                if (enemy == null)
+                {
+                    _gameLog.Write($"Target [{target}] does not exist.", ConsoleColor.Black, ConsoleColor.Yellow);
+                    return;
                 }
 
             }
@@ -58,7 +65,7 @@ namespace Dungeon.UI.Console
 
             if (enemy == null)
             {
-                _gameLog.Write("There's nothing to attack.");
+                _gameLog.Write("There's nothing to attack.", ConsoleColor.Black, ConsoleColor.Yellow);
                 return;
             }
 
@@ -71,7 +78,7 @@ namespace Dungeon.UI.Console
                 {
                     rollInfo += $" | DMG: {result.Damage} | HP: {result.RemainingHitPoints}";
                 }
-                _gameLog.Write(rollInfo);
+                _gameLog.Write(rollInfo, ConsoleColor.Black, ConsoleColor.Red);
             }
         }
 
@@ -84,7 +91,7 @@ namespace Dungeon.UI.Console
             var player = _game.GetPlayer();
             var room = _game.GetRoom(player.Location);
 
-            _gameLog.WriteToBuffer(room.Description());
+            _gameLog.WriteToBuffer(room.Description(), ConsoleColor.Black, ConsoleColor.Gray);
 
             RenderBackground();
             _gameLog.Render();

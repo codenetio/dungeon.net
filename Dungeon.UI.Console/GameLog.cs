@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -12,7 +13,7 @@ namespace Dungeon.UI.Console
         private int _textAreaWidth;
         private int _textAreaHeight;
 
-        private List<string> _gameText;
+        private List<TextLine> _gameText;
 
         #endregion
 
@@ -23,7 +24,13 @@ namespace Dungeon.UI.Console
             _textAreaWidth = textAreaWidth;
             _textAreaHeight = textAreaHeight;
 
-            _gameText = new List<string>();
+            _gameText = new List<TextLine>();
+        }
+
+        public void Write(string text, ConsoleColor backgroundColor, ConsoleColor foregroundColor)
+        {
+            WriteToBuffer(text, backgroundColor, foregroundColor);
+            Render();
         }
 
         public void Write(string text)
@@ -34,9 +41,19 @@ namespace Dungeon.UI.Console
 
         public void WriteToBuffer(string text)
         {
+            WriteToBuffer(text, ConsoleColor.Black, ConsoleColor.White);
+        }
+
+        public void WriteToBuffer(string text, ConsoleColor backgroundColor, ConsoleColor foregroundColor)
+        {
             if (text.Length < _textAreaWidth)
             {
-                _gameText.Add(text);
+                _gameText.Add(new TextLine
+                {
+                    BackgroundColor = backgroundColor,
+                    ForegroundColor = foregroundColor,
+                    Text = text
+                });
                 return;
             }
 
@@ -47,7 +64,12 @@ namespace Dungeon.UI.Console
             {
                 if (line.Length + word.Length + 1 > _textAreaWidth)
                 {
-                    _gameText.Add(line);
+                    _gameText.Add(new TextLine
+                    {
+                        BackgroundColor = backgroundColor,
+                        ForegroundColor = foregroundColor,
+                        Text = line.PadRight(_textAreaWidth, ' ')
+                    });
                     line = word + ' ';
                 }
                 else
@@ -55,7 +77,13 @@ namespace Dungeon.UI.Console
                     line += word + ' ';
                 }
             }
-             _gameText.Add(line);
+
+            _gameText.Add(new TextLine
+            {
+                BackgroundColor = backgroundColor,
+                ForegroundColor = foregroundColor,
+                Text = line.PadRight(_textAreaWidth, ' ')
+            });
         }
 
         public void Render()
@@ -75,11 +103,15 @@ namespace Dungeon.UI.Console
 
                 if (index < _gameText?.Count)
                 {
-                    var text = _gameText[index].PadRight(_textAreaWidth, ' ');
-                    System.Console.Write(text);
+                    // write out text if we have it
+                    System.Console.ForegroundColor = _gameText[index].ForegroundColor;
+                    System.Console.BackgroundColor = _gameText[index].BackgroundColor;
+                    System.Console.Write(_gameText[index].Text);
                 }
                 else
                 {
+                    // write out spaces if there aren't enough lines to fill the whole text area
+                    // this ensures that the whole text area is "refreshed".
                     var text = string.Empty;
                     for (var j = 0; j < _textAreaWidth; j++)
                     {
@@ -89,6 +121,10 @@ namespace Dungeon.UI.Console
                 }
                 index++;
             }
+
+            // reset console colors.
+            System.Console.ForegroundColor = ConsoleColor.White;
+            System.Console.BackgroundColor = ConsoleColor.Black;
         }
     }
 }
