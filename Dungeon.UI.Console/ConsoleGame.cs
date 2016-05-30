@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text;
 using Dungeon.Core;
 using Dungeon.Core.Models;
+using Dungeon.UI.Console.Menus;
 
 namespace Dungeon.UI.Console
 {

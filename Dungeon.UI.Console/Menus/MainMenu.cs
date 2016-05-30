@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Dungeon.UI.Console
+namespace Dungeon.UI.Console.Menus
 {
     public class MainMenu
     {

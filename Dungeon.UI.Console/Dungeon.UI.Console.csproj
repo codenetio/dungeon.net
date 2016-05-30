@@ -46,7 +46,7 @@
     <Compile Include="CommandParser.cs" />
     <Compile Include="ConsoleGame.cs" />
     <Compile Include="GameLog.cs" />
-    <Compile Include="MainMenu.cs" />
+    <Compile Include="Menus\MainMenu.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TextLine.cs" />
