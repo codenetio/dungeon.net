@@ -23,6 +23,7 @@ namespace Dungeon.UI.Console
 
             _commandParser.Attack += Attack;
             _commandParser.Run += _game.Run;
+
         }
 
         private void Attack(string target)
@@ -89,31 +90,37 @@ namespace Dungeon.UI.Console
 
         public void Start()
         {
-            _game = new Game();
-            _game.NewGame();
+            var mainMenu = new MainMenu(System.Console.WindowWidth, System.Console.WindowHeight);
+            mainMenu.Render();
+            
+            if (mainMenu.Selection == MainMenu.Option.NewGame)
+            { 
+                _game.NewGame();
 
-            _playing = true;
-            var player = _game.GetPlayer();
-            var room = _game.GetRoom(player.Location);
+                _playing = true;
+                var player = _game.GetPlayer();
+                var room = _game.GetRoom(player.Location);
 
-            _gameLog.WriteToBuffer(room.Description(), ConsoleColor.Black, ConsoleColor.Gray);
+                _gameLog.WriteToBuffer(room.Description(), ConsoleColor.Black, ConsoleColor.Gray);
 
-            RenderBackground();
-            _gameLog.Render();
-            SetCursorForInput();
-
-            while (_playing)
-            {
-
-                var input = System.Console.ReadLine();
-                ClearInput();
-
-                _commandParser.Parse(input);
-
+                RenderBackground();
+                _gameLog.Render();
                 SetCursorForInput();
-            }
 
-            System.Console.ReadKey();
+                while (_playing)
+                {
+
+                    var input = System.Console.ReadLine();
+                    ClearInput();
+
+                    _commandParser.Parse(input);
+
+                    SetCursorForInput();
+                }
+
+                System.Console.ReadKey();
+            }
+            
         }
 
         private void SetCursorForInput()
