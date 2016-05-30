@@ -1,4 +1,4 @@
-# dungeon.net
+[![Dungeon.Net](https://github.com/codenetio/dungeon.net/blob/dev-darin/logo.png)]
 
 A fun little dungeon crawler game making use of the .NET Framework.
 
