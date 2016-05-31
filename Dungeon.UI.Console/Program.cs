@@ -5,6 +5,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using Dungeon.Core;
+using Dungeon.UI.Console.Views;
 
 namespace Dungeon.UI.Console
 {
@@ -12,9 +13,12 @@ namespace Dungeon.UI.Console
     {
         static void Main(string[] args)
         {
-            var consoleGame = new ConsoleGame();
-            consoleGame.Start();
-            System.Console.SetWindowSize(100,50);
+            var gameView = new GameView();
+            System.Console.SetCursorPosition(0,0);
+            System.Console.ReadKey();
+            //var consoleGame = new ConsoleGame();
+            //consoleGame.Start();
+            
         }
     }
 }
